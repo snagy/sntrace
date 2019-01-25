@@ -61,6 +61,18 @@ public:
         return -2.0f*dot(n)*n;
     }
 
+    bool refract(const Vector3& normal, const float ni_over_nt, Vector3 &refracted) const {
+        Vector3 uv = normalized();
+        float dt = uv.dot(normal);
+
+        float discriminant = 1.0f - ni_over_nt * ni_over_nt*(1.0f - dt * dt);
+        if(discriminant > 0.0f) {
+            refracted = ni_over_nt * (uv - normal * dt) - normal * sqrtf(discriminant);
+            return true;
+        }
+        return false;
+    }
+
     static Vector3 lerp(const Vector3& a, const Vector3& b, const float t) {
         Vector3 diff = b - a;
         return a + Vector3(diff.x*t, diff.y*t, diff.z*t);

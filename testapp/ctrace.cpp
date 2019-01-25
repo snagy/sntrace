@@ -5,6 +5,7 @@
 #include <stdint.h>
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <array>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBI_MSC_SECURE_CRT
@@ -37,13 +38,13 @@ int main()
     SNRand::initRand();
 
     World world;
-    const int width = 500;
-    const int height = 250;
+    const int width = 800;
+    const int height = 600;
     const int numChannels = 3;
 
-    const int num_samples = 50;
+    const int num_samples = 150;
 
-    uint8_t outColors[width * height * numChannels];
+    std::vector<uint8_t> outColors(width * height * numChannels);
 
     const Vector3 look_from = Vector3(7.0f, 2.0f, 2.0f);
     const Vector3 look_at = Vector3(0.0f, 0.0f, 0.0f);
@@ -72,6 +73,6 @@ int main()
         }
     }
 
-    stbi_write_bmp("out.bmp", width, height, numChannels, outColors);
+    stbi_write_bmp("out.bmp", width, height, numChannels, outColors.data());
 }
 

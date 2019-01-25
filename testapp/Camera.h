@@ -20,7 +20,7 @@ public:
     }
 
     Ray getRay(float s, float t) const {
-        Vector3 rd = lens_radius * Vector3(1.0f,1.0f,0.0f);// *Vector3::generateRandomUnitDisc();
+        Vector3 rd = lens_radius * Vector3::generateRandomUnitDisc();
         Vector3 jitter = u * rd.x + v * rd.y;
         return Ray(origin + jitter, lower_left_corner + horizontal * s + vertical * t - jitter);
     }

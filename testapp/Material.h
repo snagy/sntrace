@@ -35,6 +35,13 @@ public:
 class Dielectric : public Material
 {
     float ior;
+
+    static float schlick(const float cosine, const float ior) {
+        float r0 = (1.0f - ior) / (1.0f + ior);
+        r0 *= r0;
+        return r0 + (1.0f - r0)*pow((1.0f - cosine), 5);
+    }
+
 public:
     Dielectric(float ior) : ior(ior) {};
 

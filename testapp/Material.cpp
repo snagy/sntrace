@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Material.h"
+#include "SNRand.h"
 
 hit_result Lambertian::scatter(Ray& r_in, Vector3 &pos, Vector3 &normal)
 {
@@ -17,6 +18,21 @@ hit_result Metallic::scatter(Ray& r_in, Vector3 &pos, Vector3 &normal)
 
 hit_result Dielectric::scatter(Ray& r_in, Vector3 &pos, Vector3 &normal)
 {
-    // todo implement
-    return hit_result{ true, Ray{pos,normal}, Vector3(ior,ior,ior) };
+    Vector3 attenuation { 1.0f, 1.0f, 1.0 };
+    Vector3 reflected = r_in.dir.reflect_on(normal);
+    bool facing = r_in.dir.dot(normal) > 0.0f;
+
+    float ni_over_nt = facing?ior:(1.0f / ior);
+    Vector3 outward_normal = facing ? (normal * -1.0f) : normal;
+
+    float cosine = facing ? (ior * r_in.dir.dot(normal) / r_in.dir.length()) : (-r_in.dir.dot(normal) / r_in.dir.length());
+
+    Vector3 refraction;
+
+    float reflect_probability = r_in.dir.refract(outward_normal, ni_over_nt, refraction) ? Dielectric::schlick(cosine, ior) : 1.0f;
+
+    if ( SNRand::getRand() < reflect_probability ) {
+        return hit_result{ true, Ray {pos, reflected}, attenuation };
+    }
+    return hit_result{ true, Ray{ pos, refraction }, attenuation };
 }
