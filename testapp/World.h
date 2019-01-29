@@ -13,7 +13,7 @@ public:
     World();
     ~World();
 
-    hit_result trace(Ray &r, float t_min, float t_max);
+    hit_result trace(const Ray &r, const float t_min, const float t_max) const;
 
 };
 

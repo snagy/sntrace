@@ -2,21 +2,21 @@
 #include "Material.h"
 #include "SNRand.h"
 
-hit_result Lambertian::scatter(Ray& r_in, Vector3 &pos, Vector3 &normal)
+hit_result Lambertian::scatter(const Ray& r_in, const Vector3 &pos, const Vector3 &normal) const
 {
     Vector3 target = pos + normal +Vector3::generateRandomUnitVector();
     Ray scattered = Ray{ pos, target - pos };
     return hit_result{ true, scattered, albedo };
 }
 
-hit_result Metallic::scatter(Ray& r_in, Vector3 &pos, Vector3 &normal)
+hit_result Metallic::scatter(const Ray& r_in, const Vector3 &pos, const Vector3 &normal) const
 {
     Vector3 reflected_vec = r_in.dir.normalized().reflect_on(normal);
     Ray scattered = Ray{ pos, reflected_vec + Vector3::generateRandomUnitVector()*roughness };
     return hit_result{ normal.dot(scattered.dir) > 0.0f, scattered, albedo };
 }
 
-hit_result Dielectric::scatter(Ray& r_in, Vector3 &pos, Vector3 &normal)
+hit_result Dielectric::scatter(const Ray& r_in, const Vector3 &pos, const Vector3 &normal) const
 {
     Vector3 attenuation { 1.0f, 1.0f, 1.0 };
     Vector3 reflected = r_in.dir.reflect_on(normal);

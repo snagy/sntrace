@@ -11,7 +11,7 @@ Hitable::~Hitable()
 {
 }
 
-hit_result Sphere::hitProcess(Ray &r, float t)
+hit_result Sphere::hitProcess(const Ray &r, float t) const
 {
     Vector3 hit_pos = r.point_at_t(t);
     Vector3 hit_normal = (hit_pos - pos) / radius;
@@ -19,7 +19,7 @@ hit_result Sphere::hitProcess(Ray &r, float t)
     return material->scatter(r,hit_pos,hit_normal);
 }
 
-bool Sphere::hitCheck(Ray &r, float t_min, float t_max, float &t_out)
+bool Sphere::hitCheck(const Ray &r, const float t_min, const float t_max, float &t_out) const
 {
     Vector3 oc = r.origin - pos;
 

@@ -13,7 +13,7 @@ public:
     Vector3 attenuation { Vector3() };
 
     hit_result() {};
-    hit_result(bool hit, Ray &scatter, Vector3& att) : didHit{ hit }, scatter { scatter }, attenuation{ att } {};
+    hit_result(const bool hit, const Ray &scatter, const Vector3& att) : didHit{ hit }, scatter { scatter }, attenuation{ att } {};
 };
 
 class Hitable
@@ -22,8 +22,8 @@ public:
     Hitable();
     virtual ~Hitable();
 
-    virtual hit_result hitProcess(Ray &r, float t) = 0;
-    virtual bool hitCheck(Ray &r, float t_min, float t_max, float& t_out) = 0;
+    virtual hit_result hitProcess(const Ray &r, float t) const = 0;
+    virtual bool hitCheck(const Ray &r, const float t_min, const float t_max, float& t_out) const = 0;
 };
 
 class Sphere : public Hitable {
@@ -31,8 +31,8 @@ public:
     Sphere(Vector3 p, float r, std::unique_ptr<Material> mat) : pos{ p }, radius(r), material{ std::move(mat) } {};
     virtual ~Sphere() {};
 
-    virtual hit_result hitProcess(Ray &r, float t);
-    virtual bool hitCheck(Ray &r, float t_min, float t_max, float& t_out);
+    virtual hit_result hitProcess(const Ray &r, float t) const;
+    virtual bool hitCheck(const Ray &r, const float t_min, const float t_max, float& t_out) const;
 
     Vector3 pos;
     float radius;

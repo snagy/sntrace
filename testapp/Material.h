@@ -10,7 +10,7 @@ public:
     Material() {};
     virtual ~Material() {};
 
-    virtual hit_result scatter(Ray& r_in, Vector3 &pos, Vector3 &normal) = 0;
+    virtual hit_result scatter(const Ray& r_in, const Vector3 &pos, const Vector3 &normal) const = 0;
 };
 
 class Lambertian : public Material
@@ -19,7 +19,7 @@ class Lambertian : public Material
 public:
     Lambertian(Vector3& color) : albedo{ color } {};
 
-    virtual hit_result scatter(Ray& r_in, Vector3 &pos, Vector3 &normal);
+    virtual hit_result scatter(const Ray& r_in, const Vector3 &pos, const Vector3 &normal) const;
 };
 
 class Metallic : public Material
@@ -29,7 +29,7 @@ class Metallic : public Material
 public:
     Metallic(Vector3& color, float roughness) : albedo{ color }, roughness(roughness) {};
 
-    virtual hit_result scatter(Ray& r_in, Vector3 &pos, Vector3 &normal);
+    virtual hit_result scatter(const Ray& r_in, const Vector3 &pos, const Vector3 &normal) const;
 };
 
 class Dielectric : public Material
@@ -45,6 +45,6 @@ class Dielectric : public Material
 public:
     Dielectric(float ior) : ior(ior) {};
 
-    virtual hit_result scatter(Ray& r_in, Vector3 &pos, Vector3 &normal);
+    virtual hit_result scatter(const Ray& r_in, const Vector3 &pos, const Vector3 &normal) const;
 };
 

@@ -19,7 +19,7 @@
 #include "World.h"
 #include "Camera.h"
 
-Vector3 get_color(World &world, Ray &r, int bounce) {
+Vector3 get_color(const World &world, const Ray &r, const int bounce) {
     if (bounce > 50) {
         return Vector3(1.0f,1.0f,1.0f);
     }

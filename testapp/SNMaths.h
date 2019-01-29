@@ -114,7 +114,7 @@ public:
     Vector3 origin;
     Vector3 dir;
 
-    Vector3 point_at_t(float t) {
+    Vector3 point_at_t(const float t) const {
         return(origin + t * dir);
     }
 };

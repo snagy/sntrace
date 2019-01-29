@@ -35,7 +35,7 @@ World::~World()
 {
 }
 
-hit_result World::trace(Ray &r, float t_min, float t_max) {
+hit_result World::trace(const Ray &r, const float t_min, const float t_max) const {
     float t_nearest = std::numeric_limits<float>::max();
     size_t ix_nearest = -1;
     for (size_t i = 0; i < hitables.size(); i++) {
