@@ -6,6 +6,9 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <array>
+#include <future>
+#include <chrono>
+#include <iostream>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBI_MSC_SECURE_CRT
@@ -35,11 +38,14 @@ Vector3 get_color(World &world, Ray &r, int bounce) {
 
 int main()
 {
+    // Record start time
+    auto start_time = std::chrono::high_resolution_clock::now();
+
     SNRand::initRand();
 
     World world;
-    const int width = 800;
-    const int height = 600;
+    const int width = 640;
+    const int height = 480;
     const int numChannels = 3;
 
     const int num_samples = 150;
@@ -51,12 +57,13 @@ int main()
     const float focal_dist = (look_from - look_at).length();
     Camera cam = Camera(look_from, look_at, Vector3(0.0f, 1.0f, 0.0f), 40.0f, float(width) / float(height), 0.3f, focal_dist);
 
+    std::vector<std::future<void>> futures;
 
-    for (int j = height-1; j >= 0; j--) {
+    auto lamb = [&outColors, &cam, &world, width, height, num_samples](int j) {
         for (int i = 0; i < width; i++) {
 
             Vector3 c = Vector3();
-            for(int k = 0; k < num_samples; k++ ) {
+            for (int k = 0; k < num_samples; k++) {
                 float u = (float(i) + SNRand::getRand()) / float(width);
                 float v = (float(j) + SNRand::getRand()) / float(height);
                 //float u = (float(i)) / float(width);
@@ -66,13 +73,28 @@ int main()
             }
 
             c = c * (1.0f / float(num_samples));
-            int iColor = ((height-j-1)*width + i) * 3;
+            int iColor = ((height - j - 1)*width + i) * 3;
             outColors[iColor + 0] = c.rByte();
             outColors[iColor + 1] = c.gByte();
             outColors[iColor + 2] = c.bByte();
         }
+    };
+
+    for (int j = 0; j < height; j++) {
+        futures.push_back(std::async(lamb, j));
+    }
+    
+    for (auto &f : futures) {
+        f.wait();
     }
 
+    auto finish_trace = std::chrono::high_resolution_clock::now();
+
     stbi_write_bmp("out.bmp", width, height, numChannels, outColors.data());
+
+    auto finish_write = std::chrono::high_resolution_clock::now();
+
+    std::cout << "Execution time: " << std::chrono::duration_cast<std::chrono::duration<double>>(finish_write - start_time).count() <<
+        " (tracing took: " << std::chrono::duration_cast<std::chrono::duration<double>>(finish_trace - start_time).count() << ")\n";
 }
 
